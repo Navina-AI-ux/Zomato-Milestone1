@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Zomato AI Recommender</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary-container": "#ff7f50",
+            "on-primary-container": "#6c2000",
+            "on-primary": "#ffffff",
+            "primary": "#a43c12",
+            "secondary-container": "#feda57",
+            "on-secondary-container": "#745f00",
+            "inverse-surface": "#303030",
+            "on-surface": "#1b1c1c",
+            "on-surface-variant": "#57423b",
+            "surface": "#fbf9f8",
+            "surface-container": "#efeded",
+            "surface-container-low": "#f5f3f3",
+            "surface-container-lowest": "#ffffff",
+            "surface-variant": "#e4e2e2",
+            "outline": "#8b7169",
+            "outline-variant": "#dec0b6",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+          },
+          fontSize: {
+            "headline-xl": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "800" }],
+            "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "700" }],
+            "headline-md": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+            "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+            "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+            "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.02em", fontWeight: "600" }],
+            "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .fill-icon { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+    /* Range slider */
+    .custom-range { -webkit-appearance: none; height: 6px; background: #dec0b6; border-radius: 5px; outline: none; }
+    .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 20px; height: 20px;
+      background: #ff7f50; cursor: pointer; border-radius: 50%; border: 2px solid white;
+    }
+
+    /* Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #fbf9f8; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #dec0b6; border-radius: 10px; }
+
+    /* Card hover */
+    .result-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .result-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(23,42,58,0.14); }
+
+    /* Card shadow */
+    .card-shadow { box-shadow: 0 4px 20px rgba(23,42,58,0.08); }
+
+    /* Spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { animation: spin 1s linear infinite; }
+
+    /* Pulse ring */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.8); opacity: 0.8; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+    .pulse-ring { animation: pulse-ring 1.5s ease-out infinite; }
+
+    /* Progress bar */
+    @keyframes progress { 0% { width: 0%; } 70% { width: 85%; } 100% { width: 100%; } }
+    .progress-bar { animation: progress 4s ease-in-out forwards; }
+
+    /* Screen transitions */
+    .screen { display: none; }
+    .screen.active { display: flex; }
+
+    /* Select dropdown arrow override */
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238b7169'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 20px; -webkit-appearance: none; }
+
+    /* Fallback banner */
+    .fallback-banner { background: #feda57; border-left: 4px solid #ff7f50; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+
+<!-- ══════════════════════════════════════════════════════════
+     SHARED NAVBAR
+══════════════════════════════════════════════════════════ -->
+<nav id="navbar" class="flex justify-between items-center px-12 w-full fixed top-0 left-0 z-50 bg-inverse-surface h-16">
+  <div class="flex items-center gap-2 text-white font-bold text-xl">
+    <span class="material-symbols-outlined fill-icon text-primary-container" style="font-size:28px;">restaurant</span>
+    <span class="material-symbols-outlined fill-icon text-secondary-container" style="font-size:20px;margin-left:-6px;">auto_awesome</span>
+    <span class="ml-1">Zomato AI Recommender</span>
+  </div>
+  <div class="hidden md:flex gap-6 items-center">
+    <a id="nav-home" class="text-primary-container font-semibold border-b-2 border-primary-container pb-1 text-sm cursor-pointer" onclick="showScreen('form')">Home</a>
+
+  </div>
+  <div class="flex items-center gap-3">
+    <button class="text-white p-2 hover:bg-white/10 rounded-full transition-all">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     SCREEN 1 — PREFERENCE FORM
+══════════════════════════════════════════════════════════ -->
+<div id="screen-form" class="screen active flex-col items-center min-h-screen pt-16">
+
+  <!-- Hero Banner -->
+  <section class="w-full h-[180px] bg-gradient-to-r from-[#FF7F50] to-[#FFDB58] flex flex-col justify-center items-center text-center px-6 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+      <div class="grid grid-cols-12 w-full h-full">
+        <div class="border-r border-white/20"></div><div class="border-r border-white/20"></div>
+        <div class="border-r border-white/20"></div><div class="border-r border-white/20"></div>
+        <div class="border-r border-white/20"></div><div class="border-r border-white/20"></div>
+        <div class="border-r border-white/20"></div><div class="border-r border-white/20"></div>
+        <div class="border-r border-white/20"></div><div class="border-r border-white/20"></div>
+        <div class="border-r border-white/20"></div><div></div>
+      </div>
+    </div>
+    <h1 class="text-headline-xl text-white mb-1 drop-shadow-sm">Find Your Perfect Restaurant with AI</h1>
+    <p class="text-body-lg text-white/90">Tell us your preferences — we'll handle the rest</p>
+  </section>
+
+  <!-- Form Card -->
+  <div class="w-full max-w-[900px] px-4 -mt-10 relative z-10 pb-12">
+    <div class="bg-[#FFFDEE] rounded-xl p-12 card-shadow border border-outline-variant/30 w-full max-w-[860px] mx-auto">
+      <form id="pref-form" class="flex flex-col gap-6" onsubmit="handleSubmit(event)">
+
+        <!-- Row 1: Location & Cuisine -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Location Dropdown -->
+          <div class="flex flex-col gap-1">
+            <label class="text-label-lg text-on-surface-variant">Location</label>
+            <div class="relative flex items-center">
+              <span class="material-symbols-outlined absolute left-4 text-outline pointer-events-none z-10">location_on</span>
+              <select id="input-location" required
+                class="w-full pl-11 pr-10 py-4 rounded-lg bg-white border border-outline/20 focus:border-primary-container focus:ring-0 text-body-md text-on-surface transition-all cursor-pointer">
+                <option value="" disabled selected>Loading cities…</option>
+              </select>
+            </div>
+          </div>
+          <!-- Cuisine -->
+          <div class="flex flex-col gap-1">
+            <label class="text-label-lg text-on-surface-variant">Cuisine — optional</label>
+            <div class="relative flex items-center">
+              <span class="material-symbols-outlined absolute left-4 text-outline">restaurant_menu</span>
+              <input id="input-cuisine" type="text"
+                class="w-full pl-11 pr-4 py-4 rounded-lg bg-white border border-outline/20 focus:border-primary-container focus:ring-0 text-body-md placeholder:text-outline/50 transition-all"
+                placeholder="e.g. Indian, Italian, Chinese…"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Budget & Rating -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Budget Pills -->
+          <div class="flex flex-col gap-1">
+            <label class="text-label-lg text-on-surface-variant">Budget</label>
+            <div class="flex gap-2 h-12" id="budget-group">
+              <button type="button" data-budget="low"
+                class="budget-btn flex-1 rounded-full border-2 border-outline-variant/40 text-label-lg text-on-surface-variant hover:bg-surface-container transition-all">
+                Low &lt;₹500
+              </button>
+              <button type="button" data-budget="medium"
+                class="budget-btn flex-1 rounded-full bg-primary-container text-white text-label-lg shadow-md scale-105 border-transparent">
+                Medium ₹500–1500
+              </button>
+              <button type="button" data-budget="high"
+                class="budget-btn flex-1 rounded-full border-2 border-outline-variant/40 text-label-lg text-on-surface-variant hover:bg-surface-container transition-all">
+                High ₹1500+
+              </button>
+            </div>
+            <input type="hidden" id="input-budget" value="medium"/>
+          </div>
+          <!-- Min Rating Slider -->
+          <div class="flex flex-col gap-1">
+            <div class="flex justify-between items-center">
+              <label class="text-label-lg text-on-surface-variant">Minimum Rating</label>
+              <span class="text-label-lg text-primary font-bold">⭐ <span id="rating-display">3.5</span>+</span>
+            </div>
+            <div class="h-12 flex items-center">
+              <input id="input-rating" type="range" min="1" max="5" step="0.5" value="3.5"
+                class="w-full custom-range"
+                oninput="document.getElementById('rating-display').textContent = this.value"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Additional Preferences -->
+        <div class="flex flex-col gap-1">
+          <label class="text-label-lg text-on-surface-variant">Additional Preferences</label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-4 text-outline">tune</span>
+            <input id="input-extra" type="text"
+              class="w-full pl-11 pr-4 py-4 rounded-lg bg-white border border-outline/20 focus:border-primary-container focus:ring-0 text-body-md placeholder:text-outline/50 transition-all"
+              placeholder="e.g. family-friendly, rooftop seating, quick service…"/>
+          </div>
+        </div>
+
+        <!-- Validation error -->
+        <div id="form-error" class="hidden bg-error-container text-error rounded-lg px-4 py-3 text-label-lg flex items-center gap-2">
+          <span class="material-symbols-outlined text-error">error</span>
+          <span id="form-error-text"></span>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-center mt-4">
+          <button type="submit"
+            class="w-[280px] h-14 bg-primary-container hover:bg-primary text-white rounded-full text-headline-md font-bold flex items-center justify-center gap-2 transition-all hover:shadow-lg active:scale-95 group">
+            Find Restaurants
+            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Feature Pills -->
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-surface-container p-6 rounded-xl flex items-center gap-4">
+        <div class="w-12 h-12 bg-secondary-container rounded-lg flex items-center justify-center text-on-secondary-container flex-shrink-0">
+          <span class="material-symbols-outlined fill-icon">bolt</span>
+        </div>
+        <div>
+          <p class="text-label-lg text-on-surface font-semibold">Instant Results</p>
+          <p class="text-body-md text-on-surface-variant/70 text-sm">AI analyses 50K+ restaurants</p>
+        </div>
+      </div>
+      <div class="bg-surface-container p-6 rounded-xl flex items-center gap-4">
+        <div class="w-12 h-12 bg-[#d1e5fa] rounded-lg flex items-center justify-center text-[#091d2d] flex-shrink-0">
+          <span class="material-symbols-outlined fill-icon">verified</span>
+        </div>
+        <div>
+          <p class="text-label-lg text-on-surface font-semibold">Real Dataset</p>
+          <p class="text-body-md text-on-surface-variant/70 text-sm">Powered by Zomato data</p>
+        </div>
+      </div>
+      <div class="bg-surface-container p-6 rounded-xl flex items-center gap-4">
+        <div class="w-12 h-12 bg-[#ffdbcf] rounded-lg flex items-center justify-center text-[#380c00] flex-shrink-0">
+          <span class="material-symbols-outlined fill-icon">auto_awesome</span>
+        </div>
+        <div>
+          <p class="text-label-lg text-on-surface font-semibold">Groq AI Ranked</p>
+          <p class="text-body-md text-on-surface-variant/70 text-sm">LLM-powered explanations</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SCREEN 2 — LOADING
+══════════════════════════════════════════════════════════ -->
+<div id="screen-loading" class="screen flex-col items-center justify-center min-h-screen pt-16 bg-surface">
+  <div class="flex flex-col items-center gap-8 text-center px-6">
+    <!-- Pulsing icon -->
+    <div class="relative flex items-center justify-center">
+      <div class="pulse-ring absolute w-32 h-32 rounded-full bg-primary-container/20"></div>
+      <div class="pulse-ring absolute w-32 h-32 rounded-full bg-primary-container/10" style="animation-delay:0.5s"></div>
+      <div class="w-24 h-24 rounded-full bg-primary-container flex items-center justify-center shadow-lg">
+        <span class="material-symbols-outlined fill-icon text-white" style="font-size:48px;">restaurant</span>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="text-headline-lg text-inverse-surface mb-2">Finding your perfect match…</h2>
+      <p id="loading-subtitle" class="text-body-lg text-on-surface-variant">Our AI is reviewing restaurants for you</p>
+    </div>
+
+    <!-- Animated dots -->
+    <div class="flex gap-2">
+      <div class="w-2.5 h-2.5 rounded-full bg-primary-container" style="animation: pulse-ring 1.2s ease-out infinite;"></div>
+      <div class="w-2.5 h-2.5 rounded-full bg-secondary-container" style="animation: pulse-ring 1.2s ease-out infinite; animation-delay:0.2s;"></div>
+      <div class="w-2.5 h-2.5 rounded-full bg-primary-container" style="animation: pulse-ring 1.2s ease-out infinite; animation-delay:0.4s;"></div>
+    </div>
+  </div>
+
+  <!-- Progress bar at bottom -->
+  <div class="absolute bottom-0 left-0 w-full h-1.5 bg-outline-variant/20">
+    <div id="progress-bar" class="h-full bg-gradient-to-r from-primary-container to-secondary-container progress-bar rounded-full"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SCREEN 3 — RESULTS (also used for fallback)
+══════════════════════════════════════════════════════════ -->
+<div id="screen-results" class="screen flex-col min-h-screen pt-16">
+  <main class="flex h-[calc(100vh-64px)]">
+
+    <!-- LEFT SIDEBAR — Navy -->
+    <aside class="fixed left-0 top-16 w-[340px] bg-inverse-surface h-[calc(100vh-64px)] overflow-y-auto px-6 py-10 text-white flex flex-col gap-8 custom-scrollbar flex-shrink-0">
+
+      <!-- Preferences Summary -->
+      <div>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="font-bold text-lg text-white">Your Preferences</h2>
+          <button onclick="showScreen('form')" class="text-gray-400 hover:text-primary-container transition-colors" title="Edit preferences">
+            <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
+          </button>
+        </div>
+        <div class="space-y-4" id="pref-summary"></div>
+        <button onclick="showScreen('form')"
+          class="mt-6 w-full py-3 px-4 rounded-full border-2 border-primary-container text-primary-container font-semibold text-sm hover:bg-primary-container/10 transition-all flex justify-center items-center gap-2">
+          <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
+          Edit Preferences
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-white/10"></div>
+
+      <!-- AI Summary -->
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="material-symbols-outlined fill-icon text-secondary-container">auto_awesome</span>
+          <span class="font-bold text-sm text-white">AI Summary</span>
+        </div>
+        <p id="ai-summary" class="italic text-gray-400 text-sm leading-relaxed"></p>
+      </div>
+
+      <!-- Fallback notice (hidden by default) -->
+      <div id="fallback-notice" class="hidden fallback-banner rounded-lg px-4 py-3">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="material-symbols-outlined fill-icon text-amber-700" style="font-size:18px;">warning</span>
+          <span class="font-bold text-sm text-amber-900">Fallback Mode</span>
+        </div>
+        <p class="text-xs text-amber-800">AI service was unavailable. Results are ranked by rating.</p>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-white/10"></div>
+
+      <!-- Nav -->
+      <nav class="flex flex-col gap-1">
+        <div onclick="showScreen('form')"
+          class="flex items-center gap-4 text-gray-400 p-3 rounded-xl hover:bg-white/5 transition-all cursor-pointer">
+          <span class="material-symbols-outlined" style="font-size:20px;">home</span>
+          <span class="text-sm font-medium">Home</span>
+        </div>
+        <div class="flex items-center gap-4 bg-primary-container/20 text-primary-container rounded-xl p-3 cursor-default">
+          <span class="material-symbols-outlined" style="font-size:20px;">star</span>
+          <span class="text-sm font-medium">Results</span>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- RIGHT CONTENT — Scrollable -->
+    <section class="ml-[340px] flex-1 bg-surface overflow-y-auto custom-scrollbar px-12 py-10">
+
+      <!-- Header -->
+      <div class="flex justify-between items-end mb-8">
+        <div>
+          <h1 id="results-heading" class="text-headline-xl text-inverse-surface mb-2">Top Picks</h1>
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container rounded-full">
+            <span class="material-symbols-outlined fill-icon text-on-secondary-container" style="font-size:14px;">spark</span>
+            <span id="results-badge" class="text-label-sm text-on-secondary-container">AI RANKED</span>
+          </div>
+        </div>
+        <button onclick="showScreen('form')"
+          class="p-3 bg-white rounded-xl card-shadow border border-outline-variant/20 text-on-surface hover:text-primary transition-colors">
+          <span class="material-symbols-outlined">tune</span>
+        </button>
+      </div>
+
+      <!-- Cards Container -->
+      <div id="results-cards" class="space-y-5 max-w-4xl pb-12"></div>
+
+    </section>
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SCREEN 4 — EMPTY STATE
+══════════════════════════════════════════════════════════ -->
+<div id="screen-empty" class="screen flex-col min-h-screen pt-16">
+  <main class="flex h-[calc(100vh-64px)]">
+
+    <!-- Left sidebar (same structure) -->
+    <aside class="fixed left-0 top-16 w-[340px] bg-inverse-surface h-[calc(100vh-64px)] overflow-y-auto px-6 py-10 text-white flex flex-col gap-8">
+      <div>
+        <h2 class="font-bold text-lg text-white mb-4">Your Preferences</h2>
+        <div class="space-y-4" id="empty-pref-summary"></div>
+        <button onclick="showScreen('form')"
+          class="mt-6 w-full py-3 px-4 rounded-full border-2 border-primary-container text-primary-container font-semibold text-sm hover:bg-primary-container/10 transition-all flex justify-center items-center gap-2">
+          <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
+          Edit Preferences
+        </button>
+      </div>
+    </aside>
+
+    <!-- Right: Empty message -->
+    <section class="ml-[340px] flex-1 bg-surface flex flex-col items-center justify-center text-center px-12">
+      <!-- Illustration -->
+      <div class="w-32 h-32 rounded-full bg-[#ffdbcf] flex items-center justify-center mb-8">
+        <span class="material-symbols-outlined text-primary-container" style="font-size:72px;">no_food</span>
+      </div>
+      <h2 class="text-headline-lg text-inverse-surface mb-3">No restaurants found</h2>
+      <p id="empty-reason" class="text-body-lg text-on-surface-variant max-w-md mb-2">
+        Your filters are too strict for this area.
+      </p>
+      <p class="text-body-md text-on-surface-variant/70 max-w-md mb-8">
+        Try lowering the minimum rating, choosing a different budget, or broadening your cuisine preference.
+      </p>
+      <div class="flex gap-4">
+        <button onclick="showScreen('form')"
+          class="px-8 py-3 bg-primary-container text-white rounded-full font-semibold text-sm hover:bg-primary transition-all hover:shadow-lg active:scale-95">
+          Adjust Filters
+        </button>
+        <button onclick="showScreen('form')"
+          class="px-8 py-3 border-2 border-inverse-surface text-inverse-surface rounded-full font-semibold text-sm hover:bg-surface-container transition-all">
+          Try Another City
+        </button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SCREEN 5 — API ERROR
+══════════════════════════════════════════════════════════ -->
+<div id="screen-error" class="screen flex-col items-center justify-center min-h-screen pt-16 bg-surface">
+  <div class="flex flex-col items-center gap-6 text-center px-6 max-w-lg">
+    <div class="w-24 h-24 rounded-full bg-error-container flex items-center justify-center">
+      <span class="material-symbols-outlined fill-icon text-error" style="font-size:48px;">error</span>
+    </div>
+    <div>
+      <h2 class="text-headline-lg text-inverse-surface mb-2">Something went wrong</h2>
+      <p id="error-text" class="text-body-lg text-on-surface-variant">We couldn't connect to the recommendation service.</p>
+    </div>
+    <button onclick="showScreen('form')"
+      class="px-8 py-3 bg-primary-container text-white rounded-full font-semibold hover:bg-primary transition-all hover:shadow-lg active:scale-95">
+      Try Again
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════ -->
+<script>
+  // ── State ──────────────────────────────────────────────────
+  let lastPrefs = {};
+
+  // ── Screen router ──────────────────────────────────────────
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // ── Budget toggles ─────────────────────────────────────────
+  document.querySelectorAll('.budget-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.budget-btn').forEach(b => {
+        b.classList.remove('bg-primary-container', 'text-white', 'shadow-md', 'scale-105', 'border-transparent');
+        b.classList.add('border-2', 'border-outline-variant/40', 'text-on-surface-variant');
+      });
+      btn.classList.remove('border-2', 'border-outline-variant/40', 'text-on-surface-variant');
+      btn.classList.add('bg-primary-container', 'text-white', 'shadow-md', 'scale-105', 'border-transparent');
+      document.getElementById('input-budget').value = btn.dataset.budget;
+    });
+  });
+
+  // ── Load cities from API ───────────────────────────────────
+  async function loadLocations() {
+    try {
+      const res = await fetch('/api/v1/locations');
+      const data = await res.json();
+      const sel = document.getElementById('input-location');
+      sel.innerHTML = '<option value="" disabled selected>Select a city…</option>';
+      data.locations.forEach(loc => {
+        const opt = document.createElement('option');
+        opt.value = loc;
+        // Title-case display
+        opt.textContent = loc.charAt(0).toUpperCase() + loc.slice(1);
+        sel.appendChild(opt);
+      });
+    } catch (e) {
+      const sel = document.getElementById('input-location');
+      sel.innerHTML = '<option value="" disabled selected>Could not load cities</option>';
+    }
+  }
+
+  // ── Preference summary renderer ────────────────────────────
+  function renderPrefSummary(containerId, prefs) {
+    const budgetLabels = { low: 'Low (< ₹500)', medium: 'Medium (₹500–1500)', high: 'High (₹1500+)' };
+    const items = [
+      { icon: 'location_on', label: 'Location', value: prefs.location ? prefs.location.charAt(0).toUpperCase() + prefs.location.slice(1) : '—' },
+      { icon: 'payments', label: 'Budget', value: budgetLabels[prefs.budget] || prefs.budget },
+      { icon: 'restaurant_menu', label: 'Cuisine', value: prefs.cuisine || 'Any cuisine' },
+      { icon: 'star', label: 'Min. Rating', value: prefs.min_rating + '+ ⭐' },
+    ];
+    if (prefs.additional_preferences) {
+      items.push({ icon: 'tune', label: 'Extras', value: prefs.additional_preferences });
+    }
+    document.getElementById(containerId).innerHTML = items.map(i => `
+      <div class="flex flex-col gap-0.5">
+        <span class="text-xs text-gray-500 uppercase tracking-widest font-bold">${i.label}</span>
+        <span class="flex items-center gap-1.5 text-white text-sm font-medium">
+          <span class="material-symbols-outlined fill-icon text-primary-container" style="font-size:16px;">${i.icon}</span>
+          ${i.value}
+        </span>
+      </div>
+    `).join('');
+  }
+
+  // ── Build result card HTML ─────────────────────────────────
+  function buildCard(rec) {
+    // Cuisine tags
+    const cuisineTags = rec.cuisine
+      .split(',')
+      .map(c => c.trim())
+      .filter(Boolean)
+      .map(c => `<span class="px-2.5 py-0.5 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">${c}</span>`)
+      .join('');
+
+    // Star rating
+    const rating = rec.rating != null ? rec.rating : '—';
+
+    return `
+      <article class="result-card relative flex bg-white rounded-xl card-shadow overflow-hidden border border-outline-variant/10">
+        <!-- Left coral accent stripe -->
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-container to-secondary-container rounded-l-xl"></div>
+
+        <div class="pl-5 pr-6 py-6 flex gap-5 w-full">
+          <!-- Rank badge + icon block -->
+          <div class="flex-shrink-0 flex flex-col items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-white font-bold text-sm shadow-sm">
+              #${rec.rank}
+            </div>
+            <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
+              <span class="material-symbols-outlined fill-icon" style="font-size:22px;">storefront</span>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="flex-grow min-w-0">
+            <div class="flex justify-between items-start mb-2">
+              <div class="min-w-0 flex-1 pr-4">
+                <h3 class="text-headline-md text-inverse-surface truncate mb-1">${rec.name}</h3>
+                <div class="flex flex-wrap gap-1.5">${cuisineTags}</div>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <div class="flex items-center justify-end gap-1 text-primary-container font-bold text-xl">
+                  ${rating}
+                  <span class="material-symbols-outlined fill-icon text-secondary-container" style="font-size:20px;">star</span>
+                </div>
+                <span class="text-on-surface-variant text-label-lg">${rec.estimated_cost}</span>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="border-t border-outline-variant/30 my-3"></div>
+
+            <!-- AI Explanation -->
+            <div class="flex gap-2 items-start">
+              <span class="material-symbols-outlined fill-icon text-secondary-container flex-shrink-0 mt-0.5" style="font-size:16px;">auto_awesome</span>
+              <p class="text-on-surface-variant text-body-md italic leading-relaxed line-clamp-3">"${rec.explanation}"</p>
+            </div>
+          </div>
+
+          <!-- Right accent stripe -->
+          <div class="absolute right-0 top-0 bottom-0 w-1 bg-primary-container/30 rounded-r-xl"></div>
+        </div>
+      </article>
+    `;
+  }
+
+  // ── Form submit handler ────────────────────────────────────
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const location = document.getElementById('input-location').value;
+    const cuisine  = document.getElementById('input-cuisine').value.trim();
+    const budget   = document.getElementById('input-budget').value;
+    const rating   = parseFloat(document.getElementById('input-rating').value);
+    const extra    = document.getElementById('input-extra').value.trim();
+
+    // Client-side validation
+    const errBox  = document.getElementById('form-error');
+    const errText = document.getElementById('form-error-text');
+    if (!location) {
+      errText.textContent = 'Please select a location.';
+      errBox.classList.remove('hidden');
+      return;
+    }
+    errBox.classList.add('hidden');
+
+    // Save prefs for sidebar
+    lastPrefs = { location, budget, cuisine: cuisine || null, min_rating: rating, additional_preferences: extra || null };
+
+    // Show loading
+    document.getElementById('loading-subtitle').textContent =
+      `Our AI is reviewing restaurants in ${location.charAt(0).toUpperCase() + location.slice(1)}`;
+    // Reset progress bar
+    const bar = document.getElementById('progress-bar');
+    bar.style.animation = 'none';
+    bar.offsetHeight; // reflow
+    bar.style.animation = '';
+    showScreen('loading');
+
+    // Call API
+    try {
+      const payload = { location, budget, min_rating: rating };
+      if (cuisine) payload.cuisine = cuisine;
+      if (extra)   payload.additional_preferences = extra;
+
+      const res  = await fetch('/api/v1/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (res.status === 400) {
+        const msg = data.detail?.[0]?.message || 'Invalid input.';
+        document.getElementById('form-error-text').textContent = msg;
+        document.getElementById('form-error').classList.remove('hidden');
+        showScreen('form');
+        return;
+      }
+
+      if (!data.recommendations || data.recommendations.length === 0) {
+        // Empty state
+        renderPrefSummary('empty-pref-summary', lastPrefs);
+        document.getElementById('empty-reason').textContent =
+          data.summary || 'No restaurants match your current filters.';
+        showScreen('empty');
+        return;
+      }
+
+      // Results state
+      const loc = lastPrefs.location;
+      document.getElementById('results-heading').textContent =
+        `Top ${data.recommendations.length} Picks in ${loc.charAt(0).toUpperCase() + loc.slice(1)}`;
+      document.getElementById('results-badge').textContent =
+        `${data.recommendations.length} RESULTS · ${data.meta?.used_fallback ? 'RATED' : 'AI RANKED'}`;
+
+      document.getElementById('ai-summary').textContent = data.summary || '';
+      renderPrefSummary('pref-summary', lastPrefs);
+
+      // Fallback banner
+      const notice = document.getElementById('fallback-notice');
+      data.meta?.used_fallback ? notice.classList.remove('hidden') : notice.classList.add('hidden');
+
+      // Render cards
+      document.getElementById('results-cards').innerHTML =
+        data.recommendations.map(buildCard).join('');
+
+      showScreen('results');
+
+    } catch (err) {
+      document.getElementById('error-text').textContent =
+        'Could not connect to the recommendation service. Make sure the server is running.';
+      showScreen('error');
+    }
+  }
+
+  // ── Init ───────────────────────────────────────────────────
+  loadLocations();
+</script>
+</body>
+</html>

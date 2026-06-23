@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zomato AI Recommender - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #fbf9f8; /* surface */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .form-shadow {
+            box-shadow: 0 4px 20px rgba(23, 42, 58, 0.08); /* Midnight Navy tint */
+        }
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #ff7f50; /* Primary Container / Coral */
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        .custom-range {
+            -webkit-appearance: none;
+            height: 6px;
+            background: #dec0b6; /* Outline variant */
+            border-radius: 5px;
+            outline: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#6c2000",
+                        "secondary-container": "#feda57",
+                        "primary-fixed": "#ffdbcf",
+                        "tertiary-fixed-dim": "#b5c9de",
+                        "surface-dim": "#dbd9d9",
+                        "on-tertiary-fixed": "#091d2d",
+                        "inverse-on-surface": "#f2f0f0",
+                        "surface-container-highest": "#e4e2e2",
+                        "tertiary": "#4e6072",
+                        "on-primary-fixed-variant": "#822800",
+                        "secondary": "#715c00",
+                        "surface-container": "#efeded",
+                        "tertiary-container": "#93a6ba",
+                        "surface": "#fbf9f8",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#fbf9f8",
+                        "surface-container-low": "#f5f3f3",
+                        "on-secondary-fixed-variant": "#554500",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#745f00",
+                        "surface-variant": "#e4e2e2",
+                        "outline-variant": "#dec0b6",
+                        "on-surface": "#1b1c1c",
+                        "on-surface-variant": "#57423b",
+                        "primary-fixed-dim": "#ffb59c",
+                        "on-tertiary-container": "#293c4c",
+                        "on-background": "#1b1c1c",
+                        "inverse-surface": "#303030",
+                        "on-primary-fixed": "#380c00",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#ff7f50",
+                        "secondary-fixed-dim": "#e6c443",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#eae8e7",
+                        "tertiary-fixed": "#d1e5fa",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#ffb59c",
+                        "surface-tint": "#a43c12",
+                        "outline": "#8b7169",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#231b00",
+                        "on-tertiary-fixed-variant": "#36495a",
+                        "background": "#fbf9f8",
+                        "primary": "#a43c12",
+                        "secondary-fixed": "#ffe179",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "base": "24px",
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "margin": "48px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "xl": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopNavBar (Fixed from JSON) -->
+<nav class="flex justify-between items-center px-margin w-full fixed top-0 left-0 z-50 bg-inverse-surface dark:bg-inverse-surface h-16 shadow-none">
+<div class="flex items-center gap-2 font-headline-md text-headline-md font-bold text-on-primary dark:text-on-primary">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+<span class="material-symbols-outlined text-secondary-container" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<span>Zomato AI Recommender</span>
+</div>
+<div class="hidden md:flex gap-base items-center">
+<a class="text-primary-container font-bold border-b-2 border-primary-container pb-1 font-label-lg text-label-lg hover:text-primary-container transition-colors duration-200" href="#">Home</a>
+<a class="text-surface-variant/80 dark:text-surface-variant/80 font-label-lg text-label-lg hover:text-primary-container transition-colors duration-200" href="#">How it works</a>
+<a class="text-surface-variant/80 dark:text-surface-variant/80 font-label-lg text-label-lg hover:text-primary-container transition-colors duration-200" href="#">About</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-primary p-2 hover:bg-surface-variant/10 rounded-full transition-all">
+<span class="material-symbols-outlined">restaurant</span>
+</button>
+<button class="text-on-primary p-2 hover:bg-surface-variant/10 rounded-full transition-all">
+<span class="material-symbols-outlined">auto_awesome</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-16 flex flex-col items-center">
+<!-- Hero Banner -->
+<section class="w-full h-[180px] bg-gradient-to-r from-[#FF7F50] to-[#FFDB58] flex flex-col justify-center items-center text-center px-gutter relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="grid grid-cols-12 w-full h-full">
+<div class="border-r border-white/20"></div><div class="border-r border-white/20"></div><div class="border-r border-white/20"></div><div class="border-r border-white/20"></div><div class="border-r border-white/20"></div><div class="border-r border-white/20"></div><div class="border-r border-white/20"></div><div class="border-r border-white/20"></div><div class="border-r border-white/20"></div><div class="border-r border-white/20"></div><div class="border-r border-white/20"></div><div class=""></div>
+</div>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-white mb-xs drop-shadow-sm">Find Your Perfect Restaurant with AI</h1>
+<p class="font-body-lg text-body-lg text-white/90">Tell us your preferences — we'll handle the rest</p>
+</section>
+<!-- Form Column Container (900px wide layout) -->
+<div class="w-full max-w-[900px] px-md -mt-10 relative z-10 pb-xl">
+<!-- Form Card -->
+<div class="bg-[#FFFDEE] rounded-xl p-xl form-shadow border border-surface-variant/30 w-full max-w-[860px] mx-auto">
+<form class="flex flex-col gap-base" onsubmit="event.preventDefault();">
+<!-- Row 1: Location & Cuisine -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-base">
+<div class="flex flex-col gap-xs">
+<label class="font-label-lg text-label-lg text-on-surface-variant">Location</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-md text-outline">location_on</span>
+<input class="w-full pl-xl pr-md py-md rounded-lg bg-surface-container-lowest border border-outline/20 focus:border-primary-container focus:ring-0 font-body-md text-body-md placeholder:text-outline/50 transition-all" placeholder="e.g. Bangalore" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-lg text-label-lg text-on-surface-variant">Cuisine — optional</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-md text-outline">restaurant_menu</span>
+<input class="w-full pl-xl pr-md py-md rounded-lg bg-surface-container-lowest border border-outline/20 focus:border-primary-container focus:ring-0 font-body-md text-body-md placeholder:text-outline/50 transition-all" placeholder="Italian, Japanese, North Indian..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Row 2: Budget & Min Rating -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-base">
+<div class="flex flex-col gap-xs">
+<label class="font-label-lg text-label-lg text-on-surface-variant">Budget</label>
+<div class="flex gap-sm h-12">
+<button class="flex-1 rounded-full border-2 border-outline-variant/30 font-label-lg text-label-lg hover:bg-surface-container-low transition-all" type="button">Low <₹500</button>
+<button class="flex-1 rounded-full bg-primary-container text-white font-label-lg text-label-lg shadow-md transform scale-105" type="button">Medium ₹500–1500</button>
+<button class="flex-1 rounded-full border-2 border-outline-variant/30 font-label-lg text-label-lg hover:bg-surface-container-low transition-all" type="button">High ₹1500+</button>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg text-on-surface-variant">Minimum Rating</label>
+<span class="font-label-lg text-label-lg text-primary font-bold">⭐ <span id="rating-val">3.5</span>+</span>
+</div>
+<div class="h-12 flex items-center">
+<input class="w-full custom-range" max="5" min="1" oninput="document.getElementById('rating-val').innerText = this.value" step="0.5" type="range" value="3.5"/>
+</div>
+</div>
+</div>
+<!-- Row 3: Additional Preferences -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-lg text-label-lg text-on-surface-variant">Additional Preferences</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-md text-outline">tune</span>
+<input class="w-full pl-xl pr-md py-md rounded-lg bg-surface-container-lowest border border-outline/20 focus:border-primary-container focus:ring-0 font-body-md text-body-md placeholder:text-outline/50 transition-all" placeholder="Pet-friendly, rooftop seating, quiet for meetings..." type="text"/>
+</div>
+</div>
+<!-- Row 4: Submit -->
+<div class="flex justify-center mt-base">
+<button class="w-[280px] h-14 bg-primary-container hover:bg-primary text-white rounded-full font-headline-md text-headline-md flex items-center justify-center gap-sm transition-all hover:shadow-lg active:scale-95 group" type="submit">
+                            Find Restaurants
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Visual Decorative Elements -->
+<div class="mt-xl grid grid-cols-1 md:grid-cols-3 gap-base">
+<div class="bg-surface-container p-base rounded-xl flex items-center gap-md">
+<div class="w-12 h-12 bg-secondary-container rounded-lg flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">Instant Results</p>
+<p class="font-body-md text-body-md text-on-surface-variant/70">AI analyzes 10,000+ local menus</p>
+</div>
+</div>
+<div class="bg-surface-container p-base rounded-xl flex items-center gap-md">
+<div class="w-12 h-12 bg-tertiary-fixed rounded-lg flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">Verified Reviews</p>
+<p class="font-body-md text-body-md text-on-surface-variant/70">Contextual sentiment analysis</p>
+</div>
+</div>
+<div class="bg-surface-container p-base rounded-xl flex items-center gap-md">
+<div class="w-12 h-12 bg-primary-fixed rounded-lg flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">Curated Menus</p>
+<p class="font-body-md text-body-md text-on-surface-variant/70">Personalized dish matches</p>
+</div>
+</div>
+</div>
+<!-- Aesthetic Image Section -->
+<div class="mt-xl rounded-xl overflow-hidden h-64 relative group">
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all z-10 flex items-center justify-center">
+<div class="text-center px-base">
+<h3 class="font-headline-md text-headline-md text-white">Join 50,000+ Foodies</h3>
+<p class="font-body-md text-body-md text-white/80">Making every meal an experience with Zomato AI.</p>
+</div>
+</div>
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="A vibrant, cinematic wide-angle shot of a diverse group of happy people dining together in a modern, stylish restaurant. The interior features warm, retro-inspired wooden furniture, soft ambient lighting from sculptural copper pendant lamps, and a playful pop-art aesthetic on the walls. The scene is bright and energetic, with plates of colorful gourmet food—artfully plated pasta, vibrant salads, and artisanal cocktails—arranged on the table. The atmosphere is warm, inviting, and full of culinary joy." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCaD8C_iYswhYmk_5DjgjmvmawP3vU4vjTzcNXKfQ8W76ArbPIdR1KLZJ9PLH4rYY3LCOXZSD9luJPiU931YBuK5uCbL3z2ocSrIBQycnqEk-YXJ4yXvRb8oPoIajpBi_DsEd8Lb2RlrD94vZZh3B-vYHC2xnd5AxMrrBdQ2NVCwmUQ7d8IrvCw2KSrzbuYhODTP7jJbU9W7YEizs-Hh3YoekgIRjAvy5cIrAraOHNOunJhU7HrKuqvPmoK_5GbQ12fpZKy8FZM6fU')">
+</div>
+</div>
+</div>
+</main>
+<!-- Side Navigation Placeholder Logic (Hidden as per Destination Rule for Landing Page) -->
+<div class="hidden" id="side-nav-placeholder"></div>
+<script>
+        // Micro-interaction for Budget Toggles
+        document.querySelectorAll('button[type="button"]').forEach(btn => {
+            if (btn.innerText.includes('Low') || btn.innerText.includes('Medium') || btn.innerText.includes('High')) {
+                btn.addEventListener('click', function() {
+                    // Reset all
+                    const siblings = this.parentElement.querySelectorAll('button');
+                    siblings.forEach(s => {
+                        s.classList.remove('bg-primary-container', 'text-white', 'shadow-md', 'scale-105', 'border-transparent');
+                        s.classList.add('border-2', 'border-outline-variant/30');
+                    });
+                    // Set active
+                    this.classList.remove('border-2', 'border-outline-variant/30');
+                    this.classList.add('bg-primary-container', 'text-white', 'shadow-md', 'scale-105', 'border-transparent');
+                });
+            }
+        });
+    </script>
+</body></html>

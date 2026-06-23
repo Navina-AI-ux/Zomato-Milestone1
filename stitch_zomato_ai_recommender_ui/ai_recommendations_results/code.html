@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zomato AI - Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#6c2000",
+                    "secondary-container": "#feda57",
+                    "primary-fixed": "#ffdbcf",
+                    "tertiary-fixed-dim": "#b5c9de",
+                    "surface-dim": "#dbd9d9",
+                    "on-tertiary-fixed": "#091d2d",
+                    "inverse-on-surface": "#f2f0f0",
+                    "surface-container-highest": "#e4e2e2",
+                    "tertiary": "#4e6072",
+                    "on-primary-fixed-variant": "#822800",
+                    "secondary": "#715c00",
+                    "surface-container": "#efeded",
+                    "tertiary-container": "#93a6ba",
+                    "surface": "#fbf9f8",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#fbf9f8",
+                    "surface-container-low": "#f5f3f3",
+                    "on-secondary-fixed-variant": "#554500",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#745f00",
+                    "surface-variant": "#e4e2e2",
+                    "outline-variant": "#dec0b6",
+                    "on-surface": "#1b1c1c",
+                    "on-surface-variant": "#57423b",
+                    "primary-fixed-dim": "#ffb59c",
+                    "on-tertiary-container": "#293c4c",
+                    "on-background": "#1b1c1c",
+                    "inverse-surface": "#303030",
+                    "on-primary-fixed": "#380c00",
+                    "on-secondary": "#ffffff",
+                    "primary-container": "#ff7f50",
+                    "secondary-fixed-dim": "#e6c443",
+                    "error-container": "#ffdad6",
+                    "surface-container-high": "#eae8e7",
+                    "tertiary-fixed": "#d1e5fa",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#ffb59c",
+                    "surface-tint": "#a43c12",
+                    "outline": "#8b7169",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#231b00",
+                    "on-tertiary-fixed-variant": "#36495a",
+                    "background": "#fbf9f8",
+                    "primary": "#a43c12",
+                    "secondary-fixed": "#ffe179",
+                    "on-tertiary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "base": "24px",
+                    "lg": "24px",
+                    "gutter": "24px",
+                    "margin": "48px",
+                    "xs": "4px",
+                    "md": "16px",
+                    "xl": "48px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-xl": ["Plus Jakarta Sans"],
+                    "label-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #fbf9f8;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dec0b6;
+            border-radius: 10px;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 20px rgba(23, 42, 58, 0.08);
+        }
+        .card-shadow:hover {
+            box-shadow: 0 8px 30px rgba(23, 42, 58, 0.12);
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-surface overflow-hidden">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center px-margin w-full fixed top-0 left-0 z-50 bg-inverse-surface dark:bg-inverse-surface h-16 text-on-primary">
+<div class="flex items-center gap-2 font-headline-md text-headline-md font-bold text-on-primary">
+<span class="material-symbols-outlined fill-icon text-primary-container" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+<span>Zomato AI Recommender</span>
+</div>
+<nav class="hidden md:flex items-center gap-base">
+<a class="font-label-lg text-label-lg text-primary-container font-bold border-b-2 border-primary-container pb-1 transition-colors duration-200" href="#">Results</a>
+<a class="font-label-lg text-label-lg text-surface-variant/80 hover:text-primary-container transition-colors duration-200" href="#">How it works</a>
+<a class="font-label-lg text-label-lg text-surface-variant/80 hover:text-primary-container transition-colors duration-200" href="#">About</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-primary hover:text-primary-container transition-all">auto_awesome</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a young food enthusiast with a warm smile, wearing stylish casual attire. The photography is clean and high-end, utilizing soft natural lighting in a modern interior setting with muted tones. The style is consistent with a vibrant, playful tech platform's user profile interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSjI4FGdpaxakTwCZVU35ekg0gNf9oPU8VA0lSMbzRGBU1TjFPKlRbU6e7Q4mnRmcZXjgVxoDYZ8tcQ2vkSy--Kapx5h8i1lzZFZ8mwVd0CiOu2q9_vLNCe9dE4lRVLQ2zMg3n5PSNX4OjajeEKSceK7yLZHaqmFawx-7dlELZSKg4HLDfIAJVucVw1-5sRyyDSXD6CwKJKMK7Z8lD8Vh5p0zFyIU8zuPHXuipZYgUr4cq0pzVPj45zSBtnr-sjhj-aEXXOkRzTQA"/>
+</div>
+</div>
+</header>
+<main class="flex h-screen pt-16">
+<!-- LEFT COLUMN: Sidebar (Midnight Navy) -->
+<aside class="fixed left-0 top-16 flex flex-col w-[380px] bg-inverse-surface h-[calc(100vh-64px)] overflow-y-auto px-base py-xl text-on-primary">
+<div class="space-y-xl">
+<!-- User Preferences Section -->
+<div>
+<div class="flex justify-between items-center mb-base">
+<h2 class="font-headline-sm text-headline-sm text-on-primary">Your Preferences</h2>
+<button class="material-symbols-outlined text-surface-variant/60 hover:text-primary-container transition-all">rebase_edit</button>
+</div>
+<div class="space-y-md">
+<div class="flex flex-col gap-xs">
+<span class="text-label-sm text-surface-variant/50 uppercase tracking-widest">Location</span>
+<span class="font-body-md text-on-primary">Bellandur, Bangalore</span>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="text-label-sm text-surface-variant/50 uppercase tracking-widest">Budget</span>
+<span class="font-body-md text-on-primary">High (₹1500+)</span>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="text-label-sm text-surface-variant/50 uppercase tracking-widest">Cuisine</span>
+<span class="font-body-md text-on-primary">Any Cuisine</span>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="text-label-sm text-surface-variant/50 uppercase tracking-widest">Min. Rating</span>
+<span class="font-body-md text-on-primary flex items-center gap-1">
+                                4.2+ <span class="material-symbols-outlined text-secondary-container fill-icon text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</span>
+</div>
+</div>
+<button class="mt-xl w-full py-md px-base rounded-full border-2 border-primary-container text-primary-container font-label-lg text-label-lg font-bold hover:bg-primary-container/10 transition-all flex justify-center items-center gap-2">
+<span class="material-symbols-outlined">edit</span>
+                        Edit Preferences
+                    </button>
+</div>
+<!-- AI Summary Section -->
+<div class="pt-xl border-t border-surface-variant/10">
+<div class="flex items-center gap-2 mb-md">
+<span class="material-symbols-outlined text-secondary-container fill-icon" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-lg text-label-lg font-bold text-on-primary">AI Summary</span>
+</div>
+<p class="italic text-surface-variant/80 font-body-md leading-relaxed">
+                        "Based on your preference for high-end dining in Bellandur, I've curated a list of top-rated establishments that excel in ambiance and culinary craftsmanship. These selections reflect the vibrant gourmet scene characteristic of the area."
+                    </p>
+</div>
+<!-- Navigation Tabs from JSON -->
+<nav class="flex flex-col gap-2 pt-xl border-t border-surface-variant/10">
+<div class="flex items-center gap-4 text-surface-variant p-4 mx-4 hover:bg-surface-variant/10 rounded-xl transition-all cursor-pointer">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-lg text-label-lg">Home</span>
+</div>
+<div class="flex items-center gap-4 bg-primary-container text-on-primary-container rounded-xl p-4 mx-4 scale-95 transition-transform cursor-default">
+<span class="material-symbols-outlined">rebase_edit</span>
+<span class="font-label-lg text-label-lg">Matches</span>
+</div>
+<div class="flex items-center gap-4 text-surface-variant p-4 mx-4 hover:bg-surface-variant/10 rounded-xl transition-all cursor-pointer">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-lg text-label-lg">History</span>
+</div>
+<div class="flex items-center gap-4 text-surface-variant p-4 mx-4 hover:bg-surface-variant/10 rounded-xl transition-all cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-lg text-label-lg">Settings</span>
+</div>
+</nav>
+</div>
+</aside>
+<!-- RIGHT COLUMN: Main Content (Cream Beige) -->
+<section class="ml-[380px] w-[calc(100%-380px)] bg-surface h-full overflow-y-auto custom-scrollbar px-margin py-xl">
+<!-- Header -->
+<div class="flex justify-between items-end mb-xl">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-inverse-surface mb-2">Top 5 Picks in Bellandur</h1>
+<div class="inline-flex items-center gap-2 px-md py-xs bg-secondary-container rounded-full">
+<span class="material-symbols-outlined text-on-secondary-container text-sm fill-icon" style="font-variation-settings: 'FILL' 1;">spark</span>
+<span class="font-label-sm text-label-sm text-on-secondary-container">5 RESULTS · AI RANKED</span>
+</div>
+</div>
+<div class="flex gap-md">
+<button class="p-3 bg-white rounded-xl card-shadow border border-outline-variant/20 text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">tune</span>
+</button>
+<button class="p-3 bg-white rounded-xl card-shadow border border-outline-variant/20 text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+<!-- Results Cards -->
+<div class="space-y-lg max-w-4xl">
+<!-- Card 1 -->
+<article class="relative flex items-center bg-white rounded-xl card-shadow overflow-hidden group transition-all duration-300 border border-outline-variant/10">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-container to-surface"></div>
+<div class="p-base flex gap-base w-full">
+<div class="flex-shrink-0 w-48 h-48 rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A high-end restaurant interior in Bellandur featuring sophisticated modern lighting and lush indoor plants. The atmosphere is warm and inviting, with plush navy seating and coral accents on the tables. Professional architectural photography style with soft focus backgrounds." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB303y2n5BoB-Z9Qm9rjZxGWjLTkoLDfdNaQle2RgbhprSR2yL7kOw-7LorPIkvDlf-2OGCJk4XIRiR5QYXdjBV0Xd63NjG7k8vKJw6zQ1aGBAqyd0VE_mQE-eFLnFNW7DPYCu72-JhpiVepjEbsATJBNQc6DsVApv6jx67qtoKkgSknGZTnWMSK_1D_rWOg4sc6KZ3KWw4JVij7jJMbF1zmWtcvs-bWfAnlyb1B7BriKhPQ_ybWAPsGOwikZNvdUah-sZXN7Q1wJE"/>
+</div>
+<div class="flex-grow py-xs">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<div class="flex items-center gap-3 mb-xs">
+<span class="px-2 py-0.5 bg-primary-container text-on-primary font-bold rounded-lg text-sm">#1</span>
+<h3 class="font-headline-md text-headline-md text-inverse-surface">Azure Kitchen & Bar</h3>
+</div>
+<div class="flex flex-wrap gap-2 mb-sm">
+<span class="px-3 py-1 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">PAN-ASIAN</span>
+<span class="px-3 py-1 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">ROOFTOP</span>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center gap-1 text-primary-container font-bold text-lg">
+                                        4.8 <span class="material-symbols-outlined fill-icon text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-on-surface-variant/70 text-label-lg font-bold">₹2500 for two</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md line-clamp-2 italic mb-base">
+                                "The highest match for your profile. AI highlights: Exceptional sunset views, signature cocktails, and consistently praised umami flavors in their signature dim sum platter."
+                            </p>
+<div class="flex gap-base">
+<button class="px-6 py-2 bg-primary-container text-on-primary rounded-full font-bold text-label-lg hover:shadow-lg transition-all active:scale-95">Book Table</button>
+<button class="px-6 py-2 border-2 border-primary-container text-primary-container rounded-full font-bold text-label-lg hover:bg-primary-container/5 transition-all">View Menu</button>
+</div>
+</div>
+<div class="flex-shrink-0 w-1 bg-primary-container/20 rounded-full h-auto self-stretch"></div>
+<div class="absolute right-0 top-0 bottom-0 w-1 bg-primary-container"></div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="relative flex items-center bg-white rounded-xl card-shadow overflow-hidden group transition-all duration-300 border border-outline-variant/10">
+<div class="p-base flex gap-base w-full">
+<div class="flex-shrink-0 w-48 h-48 rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A contemporary Italian bistro with an open kitchen and wood-fired oven. The decor is rustic yet refined, with warm wood tones, canary yellow highlights, and elegant navy dinnerware. The lighting is intimate and warm, creating a cozy upscale dining atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRStu9xiR35zQNbdUnmFYYLkJMdQEsCH1WXkjQdoOQaTkSyckEAZ3Xem65X21hKiK5mZduXCyJnb9Go1NbIGdK0dd2xEzPogOhXhGnmzH3T-Hc4fHk62_FdIXW5N7c_FweE1xrKhHTOp6EFdZGm43gisldHjukQ-weh6HmrpZTugFirB-vSkHdnRZyUwLqk1tSNoYAP98se5QUoUQwgeDLKBsh3G4-A2CzqBApoaMt-08KOab6AMurk6Ir6ekhvqfim58AASfIgIo"/>
+</div>
+<div class="flex-grow py-xs">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<div class="flex items-center gap-3 mb-xs">
+<span class="px-2 py-0.5 bg-primary-container text-on-primary font-bold rounded-lg text-sm">#2</span>
+<h3 class="font-headline-md text-headline-md text-inverse-surface">L'Artisana Bistro</h3>
+</div>
+<div class="flex flex-wrap gap-2 mb-sm">
+<span class="px-3 py-1 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">ITALIAN</span>
+<span class="px-3 py-1 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">WINE BAR</span>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center gap-1 text-primary-container font-bold text-lg">
+                                        4.6 <span class="material-symbols-outlined fill-icon text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-on-surface-variant/70 text-label-lg font-bold">₹1800 for two</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md line-clamp-2 italic mb-base">
+                                "AI Pick for: Authentic sourdough pizzas and an curated selection of regional wines. Highly rated for quiet business dinners and intimate conversations."
+                            </p>
+<div class="flex gap-base">
+<button class="px-6 py-2 bg-primary-container text-on-primary rounded-full font-bold text-label-lg hover:shadow-lg transition-all active:scale-95">Book Table</button>
+<button class="px-6 py-2 border-2 border-primary-container text-primary-container rounded-full font-bold text-label-lg hover:bg-primary-container/5 transition-all">View Menu</button>
+</div>
+</div>
+<div class="absolute right-0 top-0 bottom-0 w-1 bg-primary-container"></div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="relative flex items-center bg-white rounded-xl card-shadow overflow-hidden group transition-all duration-300 border border-outline-variant/10">
+<div class="p-base flex gap-base w-full">
+<div class="flex-shrink-0 w-48 h-48 rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="An upscale modern Indian fusion restaurant featuring vibrant wall murals and designer lighting. The tables are set with high-end copper cutlery and white linen. The style is bold and artistic, blending traditional motifs with sleek contemporary design elements." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJV0DPgAKZBDdS_uhyLTUVmXaW_yHRJgOVd9bsgtVqOhxcR8e3e8wzlGPTr1nbFbA0lt9p65qR6IV9uR0iNG0inAjL6dbPC2VWj4Td6AL7eVXGjh_A7oydxoeklwMrBTYqoLJXfbMpaM1PF59tr7lk60hLlRzvxDbqyv04z5zznWjmqCvzp0dqTBo8i0qjP7ggspdMT4TjJCXXAokyVivFD7MAmykRV6mK2qK6MakWxyaLLWTyyGbd6xY2UkoKC8-vEUGyZmIzdOk"/>
+</div>
+<div class="flex-grow py-xs">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<div class="flex items-center gap-3 mb-xs">
+<span class="px-2 py-0.5 bg-primary-container text-on-primary font-bold rounded-lg text-sm">#3</span>
+<h3 class="font-headline-md text-headline-md text-inverse-surface">Saffron & Sage</h3>
+</div>
+<div class="flex flex-wrap gap-2 mb-sm">
+<span class="px-3 py-1 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">INDIAN FUSION</span>
+<span class="px-3 py-1 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">FINE DINING</span>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center gap-1 text-primary-container font-bold text-lg">
+                                        4.5 <span class="material-symbols-outlined fill-icon text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-on-surface-variant/70 text-label-lg font-bold">₹3000 for two</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md line-clamp-2 italic mb-base">
+                                "AI Insight: Renowned for its innovative tasting menu. Perfect if you enjoy adventurous flavors and a vibrant, artistic dining environment."
+                            </p>
+<div class="flex gap-base">
+<button class="px-6 py-2 bg-primary-container text-on-primary rounded-full font-bold text-label-lg hover:shadow-lg transition-all active:scale-95">Book Table</button>
+<button class="px-6 py-2 border-2 border-primary-container text-primary-container rounded-full font-bold text-label-lg hover:bg-primary-container/5 transition-all">View Menu</button>
+</div>
+</div>
+<div class="absolute right-0 top-0 bottom-0 w-1 bg-primary-container"></div>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="relative flex items-center bg-white rounded-xl card-shadow overflow-hidden group transition-all duration-300 border border-outline-variant/10">
+<div class="p-base flex gap-base w-full">
+<div class="flex-shrink-0 w-48 h-48 rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A minimalist Japanese sushi bar with light wood surfaces and clean lines. The setting is serene and focused on the craftsmanship of the chefs. Natural light flows through large windows, creating a bright and tranquil atmosphere consistent with high-end Japanese dining." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-L37U-h4ZH0JnTzS_NpelvU-SjdEwAv2slp1hJ3Z2pA3VpcfW8zyCAUsekWAuRU2390UBPITlfUii_G5dSfhGLOdwgegh9Owj-3GjnaC4zSC0uA_TfHQMx6-lDdYv7K35-9ummaYJi6yHsQjLcYbh1ucfq3Tymp0TstOPXHngL4Skwu2Y2UFI8hUDMHu9QBMUf65pmqWVGvnkEZTH0VnvUNOlrDk8edbhRxUyjBa02z07wNi9-I22tYoxElN8okUYW4xy9mjpdGQ"/>
+</div>
+<div class="flex-grow py-xs">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<div class="flex items-center gap-3 mb-xs">
+<span class="px-2 py-0.5 bg-primary-container text-on-primary font-bold rounded-lg text-sm">#4</span>
+<h3 class="font-headline-md text-headline-md text-inverse-surface">Umami Omakase</h3>
+</div>
+<div class="flex flex-wrap gap-2 mb-sm">
+<span class="px-3 py-1 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">JAPANESE</span>
+<span class="px-3 py-1 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">CHEF'S TABLE</span>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center gap-1 text-primary-container font-bold text-lg">
+                                        4.9 <span class="material-symbols-outlined fill-icon text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-on-surface-variant/70 text-label-lg font-bold">₹4500 for two</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md line-clamp-2 italic mb-base">
+                                "Exclusive Pick: A rare 4.9 rating. AI highlights the unmatched freshness of seasonal ingredients and the intimate 10-seater chef's table experience."
+                            </p>
+<div class="flex gap-base">
+<button class="px-6 py-2 bg-primary-container text-on-primary rounded-full font-bold text-label-lg hover:shadow-lg transition-all active:scale-95">Book Table</button>
+<button class="px-6 py-2 border-2 border-primary-container text-primary-container rounded-full font-bold text-label-lg hover:bg-primary-container/5 transition-all">View Menu</button>
+</div>
+</div>
+<div class="absolute right-0 top-0 bottom-0 w-1 bg-primary-container"></div>
+</div>
+</article>
+<!-- Card 5 -->
+<article class="relative flex items-center bg-white rounded-xl card-shadow overflow-hidden group transition-all duration-300 border border-outline-variant/10">
+<div class="p-base flex gap-base w-full">
+<div class="flex-shrink-0 w-48 h-48 rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A stylish modern steakhouse with dark leather booths, brass fixtures, and a glass-walled wine cellar. The lighting is moody and dramatic, highlighting the premium cuts of meat and elegant table settings. Professional commercial interior photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkxbGgVkeJ-m-d-qUJGhbvYWWSj449mBNzs_sWnihhuPHrT9jyQ8o9N5bRGFSOIJoC9CevV4hgnRZvellsLdwKXWI2TkTP7nJcTCpDgm2mp_GN9F19HPb-By1xFuN8jzcxRUgxqK-fROQdrf2UY-wUqdrSiD9fol9p7hU4pUs5ItHANQy071wLpSYMTCqKwgfnSEzrAVtXR34fgxkAPe2qXHrCELnFhcDAxa2ZnHMw_-7xyjqOzf_BZl1nwS8TDt1j56dNTpAP39U"/>
+</div>
+<div class="flex-grow py-xs">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<div class="flex items-center gap-3 mb-xs">
+<span class="px-2 py-0.5 bg-primary-container text-on-primary font-bold rounded-lg text-sm">#5</span>
+<h3 class="font-headline-md text-headline-md text-inverse-surface">Prime Cut Steakhouse</h3>
+</div>
+<div class="flex flex-wrap gap-2 mb-sm">
+<span class="px-3 py-1 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">STEAKHOUSE</span>
+<span class="px-3 py-1 bg-inverse-surface text-white rounded-full text-[10px] font-bold uppercase tracking-wider">CONTINENTAL</span>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center gap-1 text-primary-container font-bold text-lg">
+                                        4.4 <span class="material-symbols-outlined fill-icon text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-on-surface-variant/70 text-label-lg font-bold">₹3500 for two</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md line-clamp-2 italic mb-base">
+                                "Top Contender: Best for protein-heavy diets and premium cuts. AI notes: Excellent wine pairings and highly-rated truffle mashed potatoes."
+                            </p>
+<div class="flex gap-base">
+<button class="px-6 py-2 bg-primary-container text-on-primary rounded-full font-bold text-label-lg hover:shadow-lg transition-all active:scale-95">Book Table</button>
+<button class="px-6 py-2 border-2 border-primary-container text-primary-container rounded-full font-bold text-label-lg hover:bg-primary-container/5 transition-all">View Menu</button>
+</div>
+</div>
+<div class="absolute right-0 top-0 bottom-0 w-1 bg-primary-container"></div>
+</div>
+</article>
+</div>
+<!-- Footer Spacing -->
+<div class="h-xl"></div>
+</section>
+</main>
+<!-- Floating Action Button (FAB) - Suppressed for Results page per rules but kept for logic check -->
+<!-- Suppressed on this page as it's a detail/transactional focused result list -->
+<script>
+        // Micro-interactions and effects
+        document.querySelectorAll('article').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

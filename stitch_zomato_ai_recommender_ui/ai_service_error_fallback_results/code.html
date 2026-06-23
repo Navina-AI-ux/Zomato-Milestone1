@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zomato AI - Top Rated Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fbf9f8; /* Cream Beige */
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(164, 60, 18, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#6c2000",
+                        "secondary-container": "#feda57",
+                        "primary-fixed": "#ffdbcf",
+                        "tertiary-fixed-dim": "#b5c9de",
+                        "surface-dim": "#dbd9d9",
+                        "on-tertiary-fixed": "#091d2d",
+                        "inverse-on-surface": "#f2f0f0",
+                        "surface-container-highest": "#e4e2e2",
+                        "tertiary": "#4e6072",
+                        "on-primary-fixed-variant": "#822800",
+                        "secondary": "#715c00",
+                        "surface-container": "#efeded",
+                        "tertiary-container": "#93a6ba",
+                        "surface": "#fbf9f8",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#fbf9f8",
+                        "surface-container-low": "#f5f3f3",
+                        "on-secondary-fixed-variant": "#554500",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#745f00",
+                        "surface-variant": "#e4e2e2",
+                        "outline-variant": "#dec0b6",
+                        "on-surface": "#1b1c1c",
+                        "on-surface-variant": "#57423b",
+                        "primary-fixed-dim": "#ffb59c",
+                        "on-tertiary-container": "#293c4c",
+                        "on-background": "#1b1c1c",
+                        "inverse-surface": "#303030",
+                        "on-primary-fixed": "#380c00",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#ff7f50",
+                        "secondary-fixed-dim": "#e6c443",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#eae8e7",
+                        "tertiary-fixed": "#d1e5fa",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#ffb59c",
+                        "surface-tint": "#a43c12",
+                        "outline": "#8b7169",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#231b00",
+                        "on-tertiary-fixed-variant": "#36495a",
+                        "background": "#fbf9f8",
+                        "primary": "#a43c12",
+                        "secondary-fixed": "#ffe179",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "base": "24px",
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "margin": "48px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "xl": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface overflow-hidden">
+<!-- TopNavBar: Midnight Navy (inverse-surface) -->
+<header class="flex justify-between items-center px-margin w-full fixed top-0 left-0 z-50 bg-inverse-surface dark:bg-inverse-surface docked full-width h-16">
+<div class="flex items-center gap-2 font-headline-md text-headline-md font-bold text-on-primary dark:text-on-primary">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+<span>Zomato AI Recommender</span>
+</div>
+<nav class="hidden md:flex items-center gap-base">
+<a class="text-surface-variant/80 dark:text-surface-variant/80 font-label-lg text-label-lg hover:text-primary-container transition-colors duration-200" href="#">How it works</a>
+<a class="text-surface-variant/80 dark:text-surface-variant/80 font-label-lg text-label-lg hover:text-primary-container transition-colors duration-200" href="#">About</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-primary dark:text-inverse-primary hover:text-primary-container transition-all">restaurant</button>
+<button class="material-symbols-outlined text-on-primary dark:text-inverse-primary hover:text-primary-container transition-all">auto_awesome</button>
+<div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a young food critic smiling, lit by warm studio lights that emphasize a bright, optimistic mood. The background is a blurred high-end kitchen with stainless steel and copper accents, fitting the modern-retro playful aesthetic of the brand. The lighting is soft but vibrant, reflecting high-quality photography standards." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2sxurs7ehcl3F-XRjh6j1XPuWpE8aVxqgkLL2U5voK1QhxYGMURc7oAb1QLiVkHowp1yb_vQvuTk5VputRFuatHmpVZ3eaIcKCVXJfG9fAHf-u-7W4z34H6J9cu1tPspetVU9GvmCjYB_YtPjFLF0PG5Q-Ng2pjhfHUKeUnnc5BRwTuOnsZacQfTBmOo_pbYRSPrPPkzhCKSauth1jTN7RHNHls7BoCMP_vdv7c2MyCNBix9QmQ2ONgKiP0HRFYAKxTwDbF47wJY"/>
+</div>
+</div>
+</header>
+<!-- Main Container: 2 Column Layout -->
+<div class="flex pt-16 h-screen w-full">
+<!-- SideNavBar: Same as Results -->
+<aside class="fixed left-0 top-16 flex flex-col w-[380px] py-base h-[calc(100vh-64px)] overflow-y-auto bg-inverse-surface dark:bg-inverse-surface text-on-primary dark:text-inverse-primary">
+<div class="px-base mb-xl">
+<div class="font-headline-md text-headline-md font-extrabold text-on-primary">Zomato AI</div>
+<div class="font-label-lg text-label-lg text-surface-variant opacity-70">Your Personal Foodie</div>
+</div>
+<nav class="flex-grow space-y-2">
+<a class="flex items-center gap-4 text-surface-variant p-4 mx-4 hover:bg-surface-variant/10 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-lg text-label-lg">Home</span>
+</a>
+<a class="flex items-center gap-4 bg-primary-container text-on-primary-container rounded-xl p-4 mx-4 scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined fill-icon" style="font-variation-settings: 'FILL' 1;">rebase_edit</span>
+<span class="font-label-lg text-label-lg font-bold">Matches</span>
+</a>
+<a class="flex items-center gap-4 text-surface-variant p-4 mx-4 hover:bg-surface-variant/10 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-lg text-label-lg">History</span>
+</a>
+<a class="flex items-center gap-4 text-surface-variant p-4 mx-4 hover:bg-surface-variant/10 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-lg text-label-lg">Settings</span>
+</a>
+</nav>
+<div class="p-base">
+<button class="w-full bg-secondary-container text-on-secondary-container font-bold py-4 rounded-full flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-md">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span>Get Recommendations</span>
+</button>
+</div>
+</aside>
+<!-- Right Column: Content -->
+<main class="ml-[380px] flex-grow flex flex-col h-[calc(100vh-64px)] overflow-hidden">
+<!-- Canary Yellow top banner (Error State) -->
+<div class="h-12 bg-secondary-fixed flex items-center justify-center px-lg text-on-secondary-fixed font-bold gap-2 flex-shrink-0 animate-pulse">
+<span class="material-symbols-outlined text-sm">warning</span>
+<span class="font-label-lg text-label-lg">AI service unavailable — showing top-rated results instead</span>
+</div>
+<!-- Content Area -->
+<div class="flex-grow overflow-y-auto custom-scrollbar p-lg">
+<div class="max-w-5xl mx-auto">
+<div class="flex items-end justify-between mb-base">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Top Rated Restaurants</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">We couldn't connect to our AI brain, but these classics never fail.</p>
+</div>
+<div class="flex gap-sm">
+<span class="px-md py-xs bg-surface-container-high rounded-full font-label-lg text-label-lg">Price: $$</span>
+<span class="px-md py-xs bg-surface-container-high rounded-full font-label-lg text-label-lg">Distance: &lt; 2km</span>
+</div>
+</div>
+<!-- Bento Grid Layout for Results -->
+<div class="grid grid-cols-12 gap-base auto-rows-[220px]">
+<!-- Main Featured Card (High Rated) -->
+<div class="col-span-8 row-span-2 group relative bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(23,42,58,0.08)] overflow-hidden hover:shadow-[0_8px_30px_rgba(23,42,58,0.12)] transition-all">
+<div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary-container to-surface"></div>
+<div class="flex h-full">
+<div class="w-3/5 relative">
+<img class="w-full h-full object-cover" data-alt="A sprawling artisan Italian restaurant interior with a rustic stone pizza oven as the centerpiece. Warm amber lighting reflects off polished wooden tables and copper cookware. The scene is lush with hanging plants and a vibrant, busy atmosphere, captured with a cinematic wide-angle lens in a high-saturation, modern-retro style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlrAPmfrtKF8o4GTForn7AVJakN1EgakKr2gTvCBx4oI5ny8fZmmDG8ZPVMgVWDfy-Z89OPG2PVE77Dghh7Hd4vK5Z0q5q8Z7krQGBGyFmpyf0KM97MPbsmlqglM8inOIzYF6C_1AwtY9tXU0LL55wSx9t4wvVnJN1G2u4mlNqnenJN0S3bPODMZp-ub-pdq2pdz-HDYKf5uX19Oq20djOBHj8JU9Vwk7nPS6IgrdyngfBEGBLoKTvGMWqVzAI5niZK35ZCXxNErE"/>
+<div class="absolute top-4 left-4">
+<div class="bg-secondary-fixed text-on-secondary-fixed px-md py-1 rounded-full flex items-center gap-1 font-bold shadow-lg">
+<span class="material-symbols-outlined text-[18px] fill-icon">star</span>
+<span class="text-label-lg">Rated 4.9</span>
+</div>
+</div>
+</div>
+<div class="w-2/5 p-base flex flex-col justify-between">
+<div>
+<div class="flex gap-2 mb-sm">
+<span class="bg-inverse-surface text-on-primary px-2 py-0.5 rounded font-bold text-[10px] uppercase tracking-widest">Italian</span>
+<span class="bg-inverse-surface text-on-primary px-2 py-0.5 rounded font-bold text-[10px] uppercase tracking-widest">Artisan</span>
+</div>
+<h2 class="font-headline-md text-headline-md mb-xs">Trattoria della Nonna</h2>
+<p class="text-on-surface-variant font-body-md line-clamp-3">Famous for their 48-hour fermented dough and wood-fired margheritas that have topped charts for a decade.</p>
+</div>
+<button class="bg-primary text-on-primary font-bold py-3 rounded-full hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+                                        Book Table
+                                        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="col-span-4 row-span-1 group relative bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(23,42,58,0.08)] overflow-hidden hover:shadow-[0_8px_30px_rgba(23,42,58,0.12)] transition-all">
+<div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary-container to-surface"></div>
+<div class="p-md h-full flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div class="w-16 h-16 rounded-xl overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Close-up of a vibrant sushi platter featuring fresh salmon and tuna nigiri arranged artfully on a dark slate board. Subtle steam rises from a small bowl of miso soup in the background. The lighting is crisp and cool, highlighting the textures of the fish and grains of rice in a bright, modern-retro food photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlykj-eeGyB5rHLv1ry7-00ysOtuyzAe4v3TyDpCV_pk0LVxBrX9wBv-VnCTu1ELhXkTWqDk9OGCfBMArJ7UCKtI0FN0H40_-iFxXcLfimLuWaR2bCaXMjCQs9z0-8zm4amm3KInNADMMLPzB5lgnSJxtE7ANnr4czmT4jfmBJcD7hZQhc4VoE5HxALb7ZzVtJDZJrIQ0qaUoo7TU0GhpMgHguWrK0RQaQyUfKxjaP15NBBnXxdQwbTE5otCSGvHorMBbv7BdhySE"/>
+</div>
+<div class="bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-full flex items-center gap-1 font-bold text-[10px]">
+<span class="material-symbols-outlined text-[14px] fill-icon">star</span>
+<span>Rated 4.7</span>
+</div>
+</div>
+<div class="mt-2">
+<h3 class="font-label-lg text-label-lg text-on-surface">Sakura Zen Garden</h3>
+<p class="text-on-surface-variant text-[12px] line-clamp-1">Premium Omakase Experience</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-primary font-bold">$45 avg.</span>
+<button class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="col-span-4 row-span-1 group relative bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(23,42,58,0.08)] overflow-hidden hover:shadow-[0_8px_30px_rgba(23,42,58,0.12)] transition-all">
+<div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary-container to-surface"></div>
+<div class="p-md h-full flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div class="w-16 h-16 rounded-xl overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A gourmet smash burger with melting cheddar cheese, crisp lettuce, and heirloom tomatoes on a toasted brioche bun. The background is a vibrant red retro diner booth. The image is punchy and high-contrast, evoking appetite and excitement with bold colors and sharp details, consistent with a playful SaaS food app aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvrIt3aEIv2FG8EYlmvA0FBpoPOZA6gGDNG_jOaWBe7XLeV6juNt12Qq9DVw4f7rJS_w3k6VI-6j9BV6HTnMPc5PRMrXStde0O0ZOxnE4ckNfWxg5yjX-pe17rVidHrFxj0kkpR4Z7pWC8KU-bxLcleFM0O7bAyS99Bd33ElTKLgVBtCSpIAI8NPEt3PGcW44mxWpiYYVrs_ieohaFrTMJ0jixVBvuVAjMCdjm1HJ8b6ta4_u4W_xGSFykAqRKQl1cyxxpw3dzM3o"/>
+</div>
+<div class="bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-full flex items-center gap-1 font-bold text-[10px]">
+<span class="material-symbols-outlined text-[14px] fill-icon">star</span>
+<span>Rated 4.8</span>
+</div>
+</div>
+<div class="mt-2">
+<h3 class="font-label-lg text-label-lg text-on-surface">The Burger Lab</h3>
+<p class="text-on-surface-variant text-[12px] line-clamp-1">Best Smash Burgers in Town</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-primary font-bold">$18 avg.</span>
+<button class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="col-span-4 row-span-1 group relative bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(23,42,58,0.08)] overflow-hidden hover:shadow-[0_8px_30px_rgba(23,42,58,0.12)] transition-all">
+<div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary-container to-surface"></div>
+<div class="flex h-full items-stretch">
+<div class="w-1/3">
+<img class="w-full h-full object-cover" data-alt="A tranquil outdoor cafe setting with marble tables and wrought iron chairs. Sun-dappled shadows fall across a latte with intricate heart foam art. The scene is serene and upscale, with a palette of soft whites, greens from nearby plants, and the rich brown of coffee. The style is bright and inviting for a premium user experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOL8mTZSQNN5rREcmN-g0UouyDdpL8u9byztKOAAHcuoZ-KLMBgG9f1v1i3kSGn7ut5hlnGtAblq4zf-5VtiYNv6kWGhtHHezS7bQicrPJyhmVWn335XBz-LIbAkR1sBWffVX3WWYYVO5BlOQ0eUuPR27riqACcqC3JVvj-04eeClTXqHfCnh73P3tR7FaRmXeW1Ebl6HXhZHujEbMs9yh3SANSH30i9265QaE9Zfn6-REYbe7Bm9fum0chHq42qQNVES5C0S1KGk"/>
+</div>
+<div class="w-2/3 p-md flex flex-col justify-between">
+<div>
+<div class="bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-full flex items-center gap-1 font-bold text-[10px] w-fit mb-1">
+<span class="material-symbols-outlined text-[14px] fill-icon">star</span>
+<span>Rated 4.6</span>
+</div>
+<h3 class="font-label-lg text-label-lg text-on-surface">Bean &amp; Bloom</h3>
+<p class="text-on-surface-variant text-[10px]">Coffee &amp; Pastries</p>
+</div>
+<span class="text-primary font-bold text-sm">$12 avg.</span>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="col-span-8 row-span-1 group relative bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(23,42,58,0.08)] overflow-hidden hover:shadow-[0_8px_30px_rgba(23,42,58,0.12)] transition-all">
+<div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary-container to-surface"></div>
+<div class="flex h-full">
+<div class="w-1/2 p-base flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-sm">
+<div class="bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-full flex items-center gap-1 font-bold text-[10px]">
+<span class="material-symbols-outlined text-[14px] fill-icon">star</span>
+<span>Rated 4.5</span>
+</div>
+<span class="text-on-surface-variant text-[10px] font-bold">1.2km away</span>
+</div>
+<h3 class="font-headline-md text-headline-md">Spiceland Curry House</h3>
+<p class="text-on-surface-variant font-body-md line-clamp-1">Authentic Northern Indian flavours and the softest garlic naan.</p>
+</div>
+<div class="flex gap-4 items-center">
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-bold text-xs">Authentic</span>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-bold text-xs">Spicy</span>
+<a class="ml-auto text-primary font-bold flex items-center hover:underline" href="#">View Menu <span class="material-symbols-outlined">arrow_right_alt</span></a>
+</div>
+</div>
+<div class="w-1/2">
+<img class="w-full h-full object-cover" data-alt="A richly colored Indian feast spread across a table, featuring copper bowls of butter chicken, palak paneer, and a stack of steaming garlic naan. The colors are warm and saturated, with the deep reds and vibrant yellows of the spices popping against a dark textured tabletop. This high-energy food photography style emphasizes texture and taste for a premium recommender app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpeb3cjsNuGnMy4S-34bYU7RkPS6NXG_44SfzADW3PTEjtuI3oPCxeXTcniRDXZSW0VDx6FH527akye7qJRv0yCtUmxxBTXshcJRfKab7n9n9n9yddqgffhXacigLyolG59rorZa60oVou-5CWUZ7OhKQ6FhwcLa39uyx3Tz63XqJko_9FQm7KqDl6xz9f2zMzmWkoC8B68Jya08LFi4--NlNbCiY7_NMKlcrHKcTzWPOX6m81nC5F3B3yeGbIRvX-0l9qAJPfoMM"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination or Load More (Visual only) -->
+<div class="mt-xl flex justify-center pb-xl">
+<button class="bg-surface-container-high text-on-surface font-bold px-xl py-4 rounded-full border-2 border-outline-variant hover:bg-surface-container-highest transition-all flex items-center gap-2">
+                            Show More Classics
+                            <span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', () => el.style.transform = 'scale(0.95)');
+            el.addEventListener('mouseup', () => el.style.transform = 'scale(1)');
+            el.addEventListener('mouseleave', () => el.style.transform = 'scale(1)');
+        });
+
+        // Simple parallax effect for card hover
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+            });
+        });
+    </script>
+</body></html>

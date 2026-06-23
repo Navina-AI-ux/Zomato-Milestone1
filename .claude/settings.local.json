@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-Command python3, py -ErrorAction SilentlyContinue)",
+      "Bash(find /c/Users/snavi -name \"python.exe\" 2>/dev/null | grep -v WindowsApps | head -10)",
+      "PowerShell(where.exe python 2>$null; where.exe python3 2>$null; where.exe conda 2>$null; $env:PATH -split \";\" | Where-Object { $_ -match \"python|conda|miniconda|anaconda\" -and \\(Test-Path $_\\) })",
+      "PowerShell(where.exe uv 2>$null; where.exe uvx 2>$null; where.exe pipx 2>$null; Get-ChildItem \"$env:USERPROFILE\\\\.cargo\\\\bin\\\\uv.exe\" -ErrorAction SilentlyContinue | Select-Object Name)",
+      "PowerShell($env:PATH = \"C:\\\\Users\\\\snavi\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312;C:\\\\Users\\\\snavi\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Scripts;\" + $env:PATH; python --version)"
+    ]
+  }
+}

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zomato AI - Finding Your Match</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#6c2000",
+                        "secondary-container": "#feda57",
+                        "primary-fixed": "#ffdbcf",
+                        "tertiary-fixed-dim": "#b5c9de",
+                        "surface-dim": "#dbd9d9",
+                        "on-tertiary-fixed": "#091d2d",
+                        "inverse-on-surface": "#f2f0f0",
+                        "surface-container-highest": "#e4e2e2",
+                        "tertiary": "#4e6072",
+                        "on-primary-fixed-variant": "#822800",
+                        "secondary": "#715c00",
+                        "surface-container": "#efeded",
+                        "tertiary-container": "#93a6ba",
+                        "surface": "#fbf9f8",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#fbf9f8",
+                        "surface-container-low": "#f5f3f3",
+                        "on-secondary-fixed-variant": "#554500",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#745f00",
+                        "surface-variant": "#e4e2e2",
+                        "outline-variant": "#dec0b6",
+                        "on-surface": "#1b1c1c",
+                        "on-surface-variant": "#57423b",
+                        "primary-fixed-dim": "#ffb59c",
+                        "on-tertiary-container": "#293c4c",
+                        "on-background": "#1b1c1c",
+                        "inverse-surface": "#303030",
+                        "on-primary-fixed": "#380c00",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#ff7f50",
+                        "secondary-fixed-dim": "#e6c443",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#eae8e7",
+                        "tertiary-fixed": "#d1e5fa",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#ffb59c",
+                        "surface-tint": "#a43c12",
+                        "outline": "#8b7169",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#231b00",
+                        "on-tertiary-fixed-variant": "#36495a",
+                        "background": "#fbf9f8",
+                        "primary": "#a43c12",
+                        "secondary-fixed": "#ffe179",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "base": "24px",
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "margin": "48px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "xl": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #FFFDEE; /* Cream Beige */
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        @keyframes pulse-coral {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        @keyframes orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes progress-crawl {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+
+        .pulsing-circle {
+            animation: pulse-coral 2s ease-in-out infinite;
+        }
+
+        .orbiting-ring {
+            animation: orbit 4s linear infinite;
+        }
+
+        .progress-bar-anim {
+            animation: progress-crawl 3s linear infinite;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- TopNavBar (Shared Component) -->
+<header class="flex justify-between items-center px-margin w-full fixed top-0 left-0 z-50 bg-inverse-surface dark:bg-inverse-surface h-16">
+<div class="flex items-center gap-2 font-headline-md text-headline-md font-bold text-on-primary dark:text-on-primary">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+<span>Zomato AI Recommender</span>
+</div>
+<nav class="hidden md:flex gap-xl">
+<a class="font-label-lg text-label-lg text-surface-variant/80 hover:text-primary-container transition-colors duration-200" href="#">How it works</a>
+<a class="font-label-lg text-label-lg text-surface-variant/80 hover:text-primary-container transition-colors duration-200" href="#">About</a>
+</nav>
+<div class="flex items-center gap-md text-on-primary">
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant/10 rounded-full transition-all">restaurant</button>
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant/10 rounded-full transition-all">auto_awesome</button>
+</div>
+</header>
+<!-- SideNavBar (Shared Component - Inactive state for loading) -->
+<aside class="fixed left-0 top-16 flex flex-col w-[380px] py-base h-[calc(100vh-64px)] overflow-y-auto bg-inverse-surface dark:bg-inverse-surface hidden lg:flex">
+<div class="px-base mb-xl">
+<h2 class="font-headline-md text-headline-md font-extrabold text-on-primary">Zomato AI</h2>
+<p class="font-body-md text-surface-variant/80">Your Personal Foodie</p>
+</div>
+<nav class="flex flex-col gap-xs">
+<div class="flex items-center gap-4 text-surface-variant p-4 mx-4 hover:bg-surface-variant/10 rounded-xl transition-all cursor-not-allowed opacity-50">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-lg text-label-lg">Home</span>
+</div>
+<div class="flex items-center gap-4 text-surface-variant p-4 mx-4 hover:bg-surface-variant/10 rounded-xl transition-all cursor-not-allowed opacity-50">
+<span class="material-symbols-outlined" data-icon="rebase_edit">rebase_edit</span>
+<span class="font-label-lg text-label-lg">Matches</span>
+</div>
+<div class="flex items-center gap-4 text-surface-variant p-4 mx-4 hover:bg-surface-variant/10 rounded-xl transition-all cursor-not-allowed opacity-50">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-lg text-label-lg">History</span>
+</div>
+<div class="flex items-center gap-4 text-surface-variant p-4 mx-4 hover:bg-surface-variant/10 rounded-xl transition-all cursor-not-allowed opacity-50">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-lg text-label-lg">Settings</span>
+</div>
+</nav>
+<div class="mt-auto px-base">
+<button class="w-full bg-primary-container text-on-primary-container py-4 rounded-full font-bold opacity-50 cursor-not-allowed">
+                Get Recommendations
+            </button>
+</div>
+</aside>
+<!-- Main Loading Canvas -->
+<main class="flex flex-col items-center justify-center min-h-screen w-full lg:pl-[380px] pt-16">
+<div class="relative flex items-center justify-center">
+<!-- Animated Dashed Ring -->
+<div class="absolute w-[160px] h-[160px] rounded-full border-4 border-dashed border-secondary-container orbiting-ring"></div>
+<!-- Pulsing Coral Circle -->
+<div class="w-[120px] h-[120px] bg-primary-container rounded-full flex items-center justify-center pulsing-circle shadow-lg shadow-on-primary-container/20">
+<div class="flex gap-1 items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[48px]" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+<span class="material-symbols-outlined text-[32px] absolute -top-1 -right-1 text-secondary-container" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+</div>
+</div>
+<!-- Text Content -->
+<div class="mt-xl text-center space-y-md">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Finding your perfect match…</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md mx-auto">
+                Our AI is reviewing restaurants in <span class="font-bold text-primary">Bangalore</span> to find the best flavors for you.
+            </p>
+</div>
+<!-- Contextual Loading Decoration -->
+<div class="mt-xl flex gap-md opacity-40">
+<div class="flex flex-col items-center gap-sm">
+<div class="w-16 h-2 bg-surface-container-highest rounded-full"></div>
+<div class="w-24 h-2 bg-surface-container-highest rounded-full"></div>
+</div>
+<div class="flex flex-col items-center gap-sm">
+<div class="w-20 h-2 bg-surface-container-highest rounded-full"></div>
+<div class="w-12 h-2 bg-surface-container-highest rounded-full"></div>
+</div>
+</div>
+</main>
+<!-- Bottom Progress Bar -->
+<div class="fixed bottom-0 left-0 w-full h-1 bg-surface-container overflow-hidden">
+<div class="h-full w-48 bg-primary-container progress-bar-anim rounded-full"></div>
+</div>
+<!-- Background Atmospheric Effect -->
+<div class="fixed inset-0 pointer-events-none z-[-1] opacity-20">
+<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[100px]"></div>
+<div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary-container/20 rounded-full blur-[100px]"></div>
+</div>
+<script>
+        // Micro-interaction: Dynamic subtext updates
+        const subtexts = [
+            "Our AI is reviewing restaurants in Bangalore",
+            "Analyzing taste patterns and reviews...",
+            "Filtering for the freshest ingredients...",
+            "Matching your cravings with local gems...",
+            "Almost ready to serve your recommendations!"
+        ];
+        let index = 0;
+        const subtextElement = document.querySelector('p.font-body-lg');
+        
+        setInterval(() => {
+            index = (index + 1) % subtexts.length;
+            subtextElement.style.opacity = '0';
+            setTimeout(() => {
+                subtextElement.innerHTML = subtexts[index].replace('Bangalore', '<span class="font-bold text-primary">Bangalore</span>');
+                subtextElement.style.opacity = '1';
+            }, 300);
+        }, 4000);
+        
+        subtextElement.style.transition = 'opacity 0.3s ease-in-out';
+    </script>
+</body></html>
