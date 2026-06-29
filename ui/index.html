@@ -460,6 +460,12 @@
      JAVASCRIPT
 ══════════════════════════════════════════════════════════ -->
 <script>
+  // ── Backend URL — empty string = same origin (local), Railway URL for Vercel ──
+  const BACKEND_URL = (
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1'
+  ) ? '' : 'https://YOUR-APP.up.railway.app';
+
   // ── State ──────────────────────────────────────────────────
   let lastPrefs = {};
 
@@ -486,7 +492,7 @@
   // ── Load cities from API ───────────────────────────────────
   async function loadLocations() {
     try {
-      const res = await fetch('/api/v1/locations');
+      const res = await fetch(`${BACKEND_URL}/api/v1/locations`);
       const data = await res.json();
       const sel = document.getElementById('input-location');
       sel.innerHTML = '<option value="" disabled selected>Select a city…</option>';
@@ -627,7 +633,7 @@
       if (cuisine) payload.cuisine = cuisine;
       if (extra)   payload.additional_preferences = extra;
 
-      const res  = await fetch('/api/v1/recommend', {
+      const res  = await fetch(`${BACKEND_URL}/api/v1/recommend`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
