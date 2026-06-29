@@ -65,7 +65,7 @@ def _row_to_restaurant(row: dict, index: int) -> Optional[Restaurant]:
         rating=parse_rating(_pick(row, _RATING_COLS)),
         cost_for_two=cost,
         budget_tier=cost_to_budget_tier(cost),
-        raw=dict(row),
+        raw={},  # omit raw to save memory on Railway
     )
 
 
@@ -77,14 +77,14 @@ def load_dataset(dataset_name: str) -> list[Restaurant]:
 
     from datasets import load_dataset as hf_load  # deferred import for startup speed
 
-    logger.info("Loading dataset '%s' from Hugging Face …", dataset_name)
-    ds = hf_load(dataset_name)
+    logger.info("Loading dataset '%s' from Hugging Face (streaming) …", dataset_name)
+    # streaming=True avoids loading the full Arrow table into RAM
+    ds = hf_load(dataset_name, streaming=True)
 
     # Use whichever split is available (train > first available)
     split_name = "train" if "train" in ds else next(iter(ds))
     rows = ds[split_name]
 
-    total = len(rows)
     restaurants: list[Restaurant] = []
     dropped = 0
 
@@ -95,6 +95,7 @@ def load_dataset(dataset_name: str) -> list[Restaurant]:
         else:
             restaurants.append(r)
 
+    total = i + 1
     valid = total - dropped
     logger.info(
         "Ingestion complete — total: %d | valid: %d | dropped: %d",
