@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import csv
 import logging
 import uuid
+from pathlib import Path
 from typing import Optional
 
 from app.models.restaurant import Restaurant
@@ -18,8 +20,10 @@ logger = logging.getLogger(__name__)
 # Module-level cache — loaded once at startup
 _cache: Optional[list[Restaurant]] = None
 
+# Path to the bundled preprocessed CSV (committed to the repo)
+_CSV_PATH = Path(__file__).parent.parent.parent / "data" / "restaurants.csv"
+
 # Candidate column names for each logical field.
-# The ingestion layer tries each in order and uses the first present.
 _NAME_COLS = ["name", "restaurant_name", "Name", "Restaurant Name"]
 _LOCATION_COLS = ["location", "city", "Location", "City", "address", "Address"]
 _CUISINE_COLS = ["cuisines", "cuisine", "Cuisines", "Cuisine", "cuisine_type"]
@@ -65,29 +69,63 @@ def _row_to_restaurant(row: dict, index: int) -> Optional[Restaurant]:
         rating=parse_rating(_pick(row, _RATING_COLS)),
         cost_for_two=cost,
         budget_tier=cost_to_budget_tier(cost),
-        raw={},  # omit raw to save memory on Railway
+        raw={},
     )
 
 
 def load_dataset(dataset_name: str) -> list[Restaurant]:
-    """Load and preprocess the Hugging Face dataset. Returns cached list on repeat calls."""
+    """Load and preprocess the restaurant dataset. Returns cached list on repeat calls.
+
+    Loads from the bundled CSV (data/restaurants.csv) for fast cold starts.
+    Falls back to HuggingFace if the CSV is missing.
+    """
     global _cache
     if _cache is not None:
         return _cache
 
-    from datasets import load_dataset as hf_load  # deferred import for startup speed
+    if _CSV_PATH.exists():
+        logger.info("Loading dataset from bundled CSV: %s", _CSV_PATH)
+        restaurants = _load_from_csv(_CSV_PATH)
+    else:
+        logger.warning("Bundled CSV not found, falling back to HuggingFace download...")
+        restaurants = _load_from_huggingface(dataset_name)
 
-    logger.info("Loading dataset '%s' from Hugging Face (streaming) …", dataset_name)
-    # streaming=True avoids loading the full Arrow table into RAM
+    _cache = restaurants
+    return _cache
+
+
+def _load_from_csv(path: Path) -> list[Restaurant]:
+    restaurants: list[Restaurant] = []
+    dropped = 0
+
+    with open(path, encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for i, row in enumerate(reader):
+            r = _row_to_restaurant(row, i)
+            if r is None:
+                dropped += 1
+            else:
+                restaurants.append(r)
+
+    total = len(restaurants) + dropped
+    logger.info(
+        "Ingestion complete — total: %d | valid: %d | dropped: %d",
+        total, len(restaurants), dropped,
+    )
+    return restaurants
+
+
+def _load_from_huggingface(dataset_name: str) -> list[Restaurant]:
+    from datasets import load_dataset as hf_load
+
+    logger.info("Loading dataset '%s' from Hugging Face (streaming)…", dataset_name)
     ds = hf_load(dataset_name, streaming=True)
-
-    # Use whichever split is available (train > first available)
     split_name = "train" if "train" in ds else next(iter(ds))
     rows = ds[split_name]
 
     restaurants: list[Restaurant] = []
     dropped = 0
-
+    i = 0
     for i, row in enumerate(rows):
         r = _row_to_restaurant(dict(row), i)
         if r is None:
@@ -96,16 +134,11 @@ def load_dataset(dataset_name: str) -> list[Restaurant]:
             restaurants.append(r)
 
     total = i + 1
-    valid = total - dropped
     logger.info(
         "Ingestion complete — total: %d | valid: %d | dropped: %d",
-        total,
-        valid,
-        dropped,
+        total, len(restaurants), dropped,
     )
-
-    _cache = restaurants
-    return _cache
+    return restaurants
 
 
 def get_cache() -> list[Restaurant]:
