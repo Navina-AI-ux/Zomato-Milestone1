@@ -18,6 +18,8 @@ router = APIRouter()
 )
 async def locations(request: Request):
     from collections import Counter
+    if not getattr(request.app.state, "dataset_ready", False):
+        return JSONResponse(content={"locations": [], "status": "loading"}, status_code=200)
     restaurants = request.app.state.restaurants
     counts = Counter(r.location for r in restaurants if r.location)
     # Filter out raw street addresses (contain commas, slashes, or leading digits)
@@ -43,6 +45,12 @@ async def locations(request: Request):
 async def recommend(request_body: RecommendRequest, request: Request):
     from app.services.recommender import orchestrate
     from config.settings import settings
+
+    if not getattr(request.app.state, "dataset_ready", False):
+        return JSONResponse(
+            content={"detail": [{"message": "Server is still loading the dataset. Please retry in a moment."}]},
+            status_code=503,
+        )
 
     restaurants = request.app.state.restaurants
 

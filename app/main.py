@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from contextlib import asynccontextmanager
-
 from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import router
@@ -21,16 +21,25 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # --- startup ---
+async def _load_dataset_background(app: FastAPI) -> None:
+    """Load the dataset in a background thread so the server starts immediately."""
     from config.settings import settings
     from app.services.ingestion import load_dataset
 
-    logger.info("Loading restaurant dataset on startup ...")
-    restaurants = load_dataset(settings.DATASET_NAME)
+    logger.info("Background dataset load starting ...")
+    loop = asyncio.get_event_loop()
+    restaurants = await loop.run_in_executor(None, load_dataset, settings.DATASET_NAME)
     app.state.restaurants = restaurants
+    app.state.dataset_ready = True
     logger.info("Dataset ready: %d restaurants cached.", len(restaurants))
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # --- startup: begin loading immediately but don't block the server ---
+    app.state.restaurants = []
+    app.state.dataset_ready = False
+    asyncio.create_task(_load_dataset_background(app))
 
     yield
 
@@ -74,5 +83,9 @@ if _UI_DIR.exists():
 
 @app.get("/health", tags=["meta"])
 async def health():
+    ready = getattr(app.state, "dataset_ready", False)
     count = len(getattr(app.state, "restaurants", []))
-    return {"status": "ok", "restaurants_loaded": count}
+    return JSONResponse(
+        content={"status": "ready" if ready else "loading", "restaurants_loaded": count},
+        status_code=200,
+    )
