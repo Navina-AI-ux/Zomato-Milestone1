@@ -63,7 +63,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:8000",
         "http://127.0.0.1:8000",
-        "https://YOUR-APP.vercel.app",       # replace with actual Vercel URL after deploy
+        "https://zomato-milestone1-alpha.vercel.app",
+        "https://zomato-milestone1-3s7bjzcfg-nav14.vercel.app",
         "https://web-production-0831d.up.railway.app",
     ],
     allow_methods=["*"],
